@@ -1,0 +1,11 @@
+---
+- name: Gather data from all virtual machines
+  hosts: cowries
+  remote_user: root
+  tasks:
+
+  - name: Sending and running the script
+    script: /home/alementai/git/alementai-portspoofer-visualizer/bin/scripts/remote/ansible_gather.sh
+    args:
+      chdir: /home/cowrie/cowrie/var/log/cowrie/
+      removes: /home/cowrie/cowrie/var/log/cowrie/cowrie.json

@@ -1,0 +1,4 @@
+*/node_modules/*
+*/.export_file.json
+*/.reserve.json
+/server/db.js

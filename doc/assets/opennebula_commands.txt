@@ -1,0 +1,11 @@
+ENDPOINT=https://grid5.mif.vu.lt/cloud3/RPC2
+USER=mama7629
+read PASSWORD
+VMID=47954
+
+# Default STOP
+onevm stop $VMID --username $USER --password $PASSWORD --endpoint $ENDPOINT
+# Default START
+onevm resume $VMID --username $USER --password $PASSWORD --endpoint $ENDPOINT
+# Default REBOOT
+onevm reboot $VMID --username $USER --password $PASSWORD --endpoint $ENDPOINT

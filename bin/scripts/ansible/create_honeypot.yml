@@ -1,0 +1,69 @@
+---
+- name: Dependency installation and user creation
+  hosts: cowries
+  remote_user: root
+  tasks:
+
+  - name: Installing git, python tools, cowrie
+    apt:
+      pkg:
+        - git
+        - libssl-dev 
+        - libffi-dev 
+        - build-essential 
+        - libpython3-dev 
+        - python3-minimal 
+        - authbind 
+        - virtualenv
+        - zsh
+        - whois
+
+  - name: Adding the user 'Cowrie'
+    ansible.builtin.user:
+      name: cowrie
+
+  - name: Creating Cowrie .ssh directory
+    shell: mkdir /home/cowrie/.ssh
+
+  - name: Copying SSH key
+    copy:
+      src: /root/.ssh/authorized_keys
+      dest: /home/cowrie/.ssh/authorized_keys
+      remote_src: yes
+
+- name: Cowrie user part
+  hosts: cowries
+  remote_user: cowrie
+  tasks:
+
+  - name: Setting the honeypot_id
+    copy:
+      src: /home/alementai/git/alementai-portspoofer-visualizer/bin/scripts/ansible/.h_id
+      dest: /home/cowrie/.h_id
+  - name: Updating repositories
+    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+  - name: Cloning the Git repository
+    ansible.builtin.git:
+        repo: https://github.com/cowrie/cowrie.git
+        dest: /home/cowrie/cowrie
+
+  - name: Copying the default config
+    copy:
+      src: /home/alementai/git/alementai-portspoofer-visualizer/bin/scripts/remote/cowrie.cfg
+      dest: /home/cowrie/cowrie/etc/cowrie.cfg
+
+  - name: Upgrading pip
+    pip: 
+      name: pip
+      state: latest
+
+  - name: Creating virtualenv, installing pip packages
+    pip:
+      requirements: /home/cowrie/cowrie/requirements.txt
+      virtualenv: /home/cowrie/cowrie/cowrie-env
+
+  - name: Running cowrie
+    script: /home/alementai/git/alementai-portspoofer-visualizer/bin/scripts/remote/cowrie_run.sh
+    args:
+      chdir: /home/cowrie/cowrie

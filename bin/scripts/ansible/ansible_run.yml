@@ -1,0 +1,10 @@
+---
+- name: Cowrie user part
+  hosts: cowries
+  remote_user: cowrie
+  tasks:
+
+  - name: Running cowrie
+    script: /home/alementai/git/alementai-portspoofer-visualizer/bin/scripts/remote/cowrie_run.sh
+    args:
+      chdir: /home/cowrie/cowrie
